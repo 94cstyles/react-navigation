@@ -22,25 +22,23 @@ import getSceneIndicesForInterpolationInputRange from '../../utils/getSceneIndic
  */
 
 function forLeft(props: NavigationSceneRendererProps): AnimatedViewStyleProp {
-  const { position, scene, scenes } = props;
+  const { position, scene } = props;
   const interpolate = getSceneIndicesForInterpolationInputRange(props);
 
   if (!interpolate) return { opacity: 0 };
 
-  const activeScene = scenes.find((item: NavigationScene) => item.isActive);
-  const activeIndex = scenes.findIndex(
-    (item: NavigationScene) => item === activeScene
-  );
-  const currentIndex = scenes.findIndex(
-    (item: NavigationScene) => item === scene
-  );
-  const deviation = Math.abs((activeIndex - currentIndex) / 2);
   const { first, last } = interpolate;
   const index = scene.index;
 
   return {
     opacity: position.interpolate({
-      inputRange: [first, first + deviation, index, last - deviation, last],
+      inputRange: [
+        first,
+        first + (index - first) / 2,
+        index,
+        last - (last - index) / 2,
+        last,
+      ],
       outputRange: ([0, 0, 1, 0, 0]: Array<number>),
     }),
   };
